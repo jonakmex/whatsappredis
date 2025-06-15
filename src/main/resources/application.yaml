@@ -1,0 +1,7 @@
+whatsapp:
+  api:
+    secret: ${WHATSAPP_API_SECRET:qazwsx12}
+    url: https://graph.facebook.com
+    token: ${WHATSAPP_API_TOKEN:qazwsx12}
+    version: ${WHATSAPP_API_VERSION:2.0}
+    businessPhoneNumberId: ${WHATSAPP_API_BUSINESS_PHONE_NUMBER_ID:123456789}
