@@ -26,20 +26,20 @@ public class AddBalanceFlow implements Flow {
                     "to", phoneNumber,
                     "body", "Cliente:"
             )).subscribe();
-            flowStates.put(phoneNumber, "add_balance:"); // Initialize the flow state
+            flowStates.put(phoneNumber, type()+":"); // Initialize the flow state
         }
         else {
             String[] flowId = flow.split(":");
             if(flowId.length == 1) {
                 // first step, ask for client name
-                flowStates.put(phoneNumber, "add_balance:" + body);
+                flowStates.put(phoneNumber, type()+":" + body);
                 textMessenger.deliver(Map.of(
                         "to", phoneNumber,
                         "body", "Monto:"
                 )).subscribe();
             }
             else if(flowId.length == 2) {
-                flowStates.put(phoneNumber, "add_balance:" + ":" + flowId[1] + ":" + body);
+                flowStates.put(phoneNumber, type()+":" + ":" + flowId[1] + ":" + body);
                 textMessenger.deliver(Map.of(
                         "to", phoneNumber,
                         "body", String.format("Abonando $%s a %s.", body, flowId[1])

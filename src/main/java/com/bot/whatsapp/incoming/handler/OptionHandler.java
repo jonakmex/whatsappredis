@@ -18,7 +18,6 @@ import java.util.function.Function;
 public class OptionHandler implements ChangeHandler {
 
     private final Messenger acknowledgeMessenger;
-
     private final Map<String, Flow> flows = new ConcurrentHashMap<>();
 
     public OptionHandler(List<Flow> flowList,Messenger acknowledgeMessenger) {

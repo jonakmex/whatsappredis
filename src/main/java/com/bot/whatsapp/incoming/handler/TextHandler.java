@@ -3,26 +3,36 @@ package com.bot.whatsapp.incoming.handler;
 import com.bot.whatsapp.flow.Flow;
 import com.bot.whatsapp.outgoing.Messenger;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class TextHandler implements ChangeHandler {
 
     private final Messenger acknowledgeMessenger;
     private final Messenger textMessenger;
     private final Messenger optionsMessenger;
     private final ConcurrentHashMap<String,String> flowStates;
-    private final Flow addBalanceFlow;
+    private final Map<String, Flow> flows = new ConcurrentHashMap<>();
 
+    public TextHandler(Messenger acknowledgeMessenger,
+                       Messenger textMessenger,
+                       Messenger optionsMessenger,
+                       ConcurrentHashMap<String, String> flowStates,
+                       List<Flow> flowList) {
+        this.acknowledgeMessenger = acknowledgeMessenger;
+        this.textMessenger = textMessenger;
+        this.optionsMessenger = optionsMessenger;
+        this.flowStates = flowStates;
+        flowList.forEach(h -> flows.put(h.type(), h));
+    }
 
     @Override
     public String type() {
@@ -38,10 +48,7 @@ public class TextHandler implements ChangeHandler {
 
         String flow = flowStates.get(from);
         if (flow != null) {
-            String[] flowId = flow.split(":");
-            if ("add_balance".equals(flowId[0])) {
-                addBalanceFlow.execute(from,body);
-            }
+            flows.get(flow.split(":")[0]).execute(from, body);
         } else if("menu".equals(body)) {
             Map<String, String> options = new LinkedHashMap<>();
             options.put("invite", "Invitar");
