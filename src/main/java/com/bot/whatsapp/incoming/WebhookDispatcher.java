@@ -31,7 +31,6 @@ public class WebhookDispatcher {
                     return Flux.fromIterable(messages)
                             .flatMap(message -> {
                                 String type = message.get("type").asText();
-                                log.info("Processing message of type: {}", type);
                                 return handlers.getOrDefault(type, this::unknown).apply(change.get("value"));
                             });
                 })

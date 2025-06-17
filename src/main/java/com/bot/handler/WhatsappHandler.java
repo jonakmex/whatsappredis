@@ -20,7 +20,6 @@ public class WhatsappHandler {
     private final ObjectMapper mapper;
 
     public Mono<ServerResponse> incomingMessage(ServerRequest request) {
-        log.info("Incoming message from WhatsApp");
         String signature = request.headers()
                 .firstHeader("X-Hub-Signature-256");
 

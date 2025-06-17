@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -35,17 +34,7 @@ public class TextMessenger implements Messenger {
                         params.get("to").toString()
                         ,params.get("body").toString()))
                 .retrieve()
-                .onStatus(
-                        status -> status.is4xxClientError() || status.is5xxServerError(),
-                        response -> logErrorResponse(response)
-                )
                 .bodyToMono(Void.class);
-    }
-
-    private Mono<? extends Throwable> logErrorResponse(ClientResponse response) {
-        return response.bodyToMono(String.class)
-                .doOnNext(body -> log.error("Error response: {}", body))
-                .then(Mono.error(new RuntimeException("HTTP error: " + response.statusCode())));
     }
 
     // DTO for request body
